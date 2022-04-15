@@ -10,8 +10,8 @@ namespace State_Census_Problem
     public class CensusAnalyser
     {
         public Dictionary<string, StateCensusData> dataMap;
-        public string dataHeader = "State,Population,AreaInSqKm,DensityPerSqKm";
-        public Dictionary<string, StateCensusData> LoadCensusData(string csvFilePath)
+
+        public Dictionary<string, StateCensusData> LoadCensusData(string csvFilePath, string dataHeader)
         {
             dataMap = new Dictionary<string, StateCensusData>();
             if (!File.Exists(csvFilePath))
@@ -32,7 +32,9 @@ namespace State_Census_Problem
                     throw new StateCensusException(StateCensusException.ExceptionType.INCORRECT_DEMLIMETER,
                         "Required delimeter \",\" not found.");
                 string[] data = row.Split(",");
-                dataMap.Add(data[0], new StateCensusData(data[0], data[1], data[2], data[3]));
+                if (!csvFilePath.Contains("Code"))
+                    dataMap.Add(data[0], new StateCensusData(data[0], data[1], data[2], data[3]));
+                else dataMap.Add(data[0], new StateCensusData(new StateCodeAnalyse(data[0], data[1], data[2], data[3])));
             }
             return dataMap;
         }
